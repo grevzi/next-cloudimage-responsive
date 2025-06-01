@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
-import { getImgSRC, processReactNode, generateAlt } from 'cloudimage-responsive-utils';
+import Image from 'next/legacy/image';
+import { generateAlt, getImgSRC, processReactNode } from 'cloudimage-responsive-utils';
 
 import { computeImageStyles, getWrapperClassName, computeImageSize } from './utils/compute';
 import { parseParams, parseImageSrc } from './utils/parse';
@@ -9,7 +9,7 @@ import { WRAPPER_STYLES } from './styles.constants';
 import classes from './normalize.styles.module.css';
 
 
-function Img(props) {
+export function Img(props) {
   const { config = {} } = props;
 
   const {
@@ -140,7 +140,7 @@ function Img(props) {
       style={{ ...WRAPPER_STYLES, ...style }}
       className={`${wrapperClassName}${className ? ` ${className}` : ''}`}
     >
-      {renderBlurImage && (
+      {renderBlurImage && !loaded && (
         <Image
           src={src}
           loader={(context) => cloudimageLoader(context, true)}
@@ -148,6 +148,7 @@ function Img(props) {
           priority
           objectFit={objectFit}
           objectPosition={objectPosition}
+          fetchPriority="high"
           alt={`low-preview-${_alt}`}
           {...computeImageSize(layout, width, height)}
         />
@@ -164,6 +165,7 @@ function Img(props) {
           style={computeImageStyles(loaded, transitionDuration)}
           onLoad={onImageLoad}
           loading={lazyload ? 'lazy' : 'eager'}
+          fetchPriority={lazyload ? 'low' : 'high'}
           alt={_alt}
           onError={onImageLoadError}
           {...computeImageSize(layout, width, height)}
@@ -177,6 +179,7 @@ function Img(props) {
           style={computeImageStyles(loaded, transitionDuration, objectFit, objectPosition, !previousSrc.current)}
           className={classes.ciSsgImage}
           loading={lazyload ? 'lazy' : 'eager'}
+          fetchPriority={lazyload ? 'high' : 'low'}
           onError={onImageLoadError}
         />
       )}
@@ -189,5 +192,3 @@ function Img(props) {
     </div>
   );
 }
-
-export default Img;

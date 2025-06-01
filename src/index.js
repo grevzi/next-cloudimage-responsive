@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 
 import CloudimageProvider, { CloudimageContext } from './provider';
-import Image from './Img';
+import { Img as Image } from './Img';
 
 
 function Img(props) {
@@ -21,5 +21,5 @@ function BackgroundImg(props) {
 }
 
 
-export default Img;
+// export default Img;
 export { CloudimageProvider, Img, BackgroundImg };
